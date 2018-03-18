@@ -1,3 +1,14 @@
+class MVP():
+    def __init__(self, name, spawnMap, tomb, timeKilled, respawnRate, respawnTime):
+        self.name = name
+        self.spawnMap = spawnMap
+        self.tombCoords = tomb
+        self.timeKilled = timeKilled
+        self.respawnRate = respawnRate
+        self.respawnTime = respawnTime
+
+MvpList = []
+
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
