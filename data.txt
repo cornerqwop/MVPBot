@@ -1,0 +1,43 @@
+{
+    "MVP": [
+        {
+            "name": "OrcHero",
+            "spawnMap": "gef_fild14",
+            "respawnRate": 60,
+            "weakTo": "Fire/Poison",
+            "tombCoords": "00,00",
+            "timeKilled": "2018-03-20 12:40",
+            "respawnTime": "2018-03-20 13:40"
+        },
+        {
+            "name": "Maya",
+            "spawnMap": "anthell02",
+            "respawnRate": 120,
+            "weakTo": "Fire",
+            "tombCoords": "00,00",
+            "timeKilled": "2018-03-20 14:53",
+            "respawnTime": "2018-03-20 16:53"
+        },
+        {
+            "name": "eddga",
+            "spawnMap": "pay_fild11",
+            "respawnRate": 120,
+            "weakTo": "Water",
+            "tombCoords": [
+                0,
+                0
+            ],
+            "timeKilled": "2018-03-20 00:00",
+            "respawnTime": "2018-03-20 02:00"
+        },
+        {
+            "name": "DarkLord",
+            "spawnMap": "pay_fild11",
+            "respawnRate": 60,
+            "weakTo": "Fire/Holy",
+            "tombCoords": "59,42",
+            "timeKilled": "2018-03-20 13:40",
+            "respawnTime": "2018-03-20 14:40"
+        }
+    ]
+}
