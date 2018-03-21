@@ -1,10 +1,16 @@
 import datetime
 import re
+import operator
+import json
+from operator import itemgetter
 
-class MVP():
+
+defualtTime = datetime.date(2004, 1, 1)
+
+class MVP(object):
     tombCoords = [0, 0]
-    timeKilled = -1
-    respawnTime = -1
+    timeKilled = defualtTime
+    respawnTime = defualtTime
 
     def __init__(self, name, spawnMap, respawnRate, weakTo=""):
         self.name = name
@@ -16,7 +22,11 @@ class MVP():
         self.tombCoords = tombCoords
         self.timeKilled = timeKilled
         self.respawnTime = self.timeKilled + self.respawnRate * minute
-        print("UPDATED: " + self.name + "\nTO: " + timeKilled)
+        print("UPDATED: " + self.name + "\nTO: " + str(timeKilled))
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+        sort_keys=True, indent=4)
 
 class MVPList():
 
@@ -46,9 +56,15 @@ class MVPList():
     def nextUp(self): # gets the next up mvp
         sortedTimes = sorted(self.timesCache)
         now = currentTime()
-        for i in sortedTimes:
+        for i in sortedTimes:   
             if now < i:
-                return self.mvps[self.timesCache[i]]
+                for x in self.mvps:
+                    #For Whatever Reason its comparing the object address             
+                    if self.mvps[x] == self.timesCache[i]:
+                        print("FoundMVP")
+                        return self.mvps[x]         
+                #return next((x for x in self.mvps if x.respawnTime == self.timesCache[i]))
+                #self.mvps[self.timesCache[i]]
             elif now - hour > i:
                 del self.timesCache[i]
         return -1
@@ -56,17 +72,20 @@ class MVPList():
     def setMVP(self, mvpName, tombCoords, timeKilled): # set state for an MVP. timeKilled is in 'hh:mm' string format, utc
         if mvpName not in self.mvps:
             return -1
-        if not re.match('([1-9]+:[1-9]+})', timeKilled):
+            '''
+        if not re.match('([1-9]+:[1-9]+)', timeKilled):
             return -1
+            '''
         
         t = timeKilled.split(':')
-        toSet = currentTime().replace(hour = t[0], minute = t[1])
+        toSet = currentTime().replace(hour = int(t[0]), minute = int(t[1]))
         if currentTime() < toSet + 3 * minute: # 3 minutes of leniency
-            toSet = toSet - day
+            toSet = toSet #- day
         self.mvps[mvpName].setState(tombCoords, toSet)
+        self.timesCache[self.mvps[mvpName].respawnTime] = self.mvps[mvpName]
     
     def clean(self): # deletes out of date items
-        sortedTimes = sorted(timesCache)
+        sortedTimes = sorted(self.timesCache)
         now = currentTime()
         for i in sortedTimes:
             if now - hour > i:
@@ -76,14 +95,14 @@ class MVPList():
         tempstring  = ""
         for x in self.mvps:
             tempstring += "NAME: " + self.mvps[x].name + "\nSPAWNMAP: " + self.mvps[x].spawnMap + "\nRespawn Rate: " + str(self.mvps[x].respawnRate) + "\nWeak To: " + self.mvps[x].weakTo
-            tempstring += "\nTomb Coords: " + str(self.mvps[x].tombCoords) + "\nTime Killed: " + str(self.mvps[x].timeKilled) + "\nRespawn Time: " + str(self.mvps[x].respawnTime)
+            tempstring += "\nTomb Coords: " + str(self.mvps[x].tombCoords) + "\nTime Killed: " + self.mvps[x].timeKilled.strftime("%m-%d %H:%M") + "\nRespawn Time: " + self.mvps[x].respawnTime.strftime("%m-%d %H:%M")
             tempstring += "\n\n"
         return tempstring
 
     def printMVP(self, MVP):
         if MVP != -1:
             tempstring = ""
-            tempstring += "NAME: " + MVP.name + "\nSpawn Map: " + MVP.spawnMap + "\nRespawn Time: " + str(MVP.respawnTime) + "\nWeak To: " + MVP.weakTo
+            tempstring += "NAME: " + MVP.name + "\nSpawn Map: " + MVP.spawnMap + "\nRespawn Time: " + MVP.respawnTime.strftime("%H:%M") + "\nWeak To: " + MVP.weakTo
             tempstring += "\n\n"
             return tempstring
         else:
